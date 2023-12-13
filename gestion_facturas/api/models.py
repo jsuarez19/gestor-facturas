@@ -20,5 +20,3 @@ class DocumentoVenta(models.Model):
 
     def __str__(self):
         return f"{self.NUMERO_FACTURA} - {self.NOMBRE_CLIENTE}"
-
-# Create your models here.
