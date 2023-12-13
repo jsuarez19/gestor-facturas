@@ -7,7 +7,7 @@ class DocumentoVenta(models.Model):
     MONEDA = models.CharField(max_length=60, null=True)
     MONTO = models.DecimalField(max_digits=18, decimal_places=2, null=True)
     TIPO_CLIENTE = models.CharField(max_length=60, null=True)
-    NOMBRE_CLIENTE = models.CharField(max_length=150, null=true)
+    NOMBRE_CLIENTE = models.CharField(max_length=150, null=True)
     CONDICION_PAGO = models.CharField(max_length=60, null=True)
     VENDEDOR = models.CharField(max_length=60, null=True)
     CANCELADO = models.CharField(max_length=1, null=True)
