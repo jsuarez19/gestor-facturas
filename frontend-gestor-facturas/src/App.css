@@ -1,3 +1,13 @@
+:root{
+  --color-dark-blue: #002a8d;
+  --color-light-blue: #0759a4;
+  --color-lead-blue: #a2b5d2;
+  --color-white: #ffffff;
+  --color-green: #6ac90f;
+  --color-light-skyblue: #ebf4ff;
+  --color-red: #FF0000;
+}
+
 h1 {
-  color: red ;
+  color: var(--color-red);
 }
