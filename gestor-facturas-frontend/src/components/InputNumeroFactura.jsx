@@ -7,6 +7,7 @@ export default function InputNumeroFactura({ onChangeValue }) {
         const textoInputToLowerCase = textoInput.toLowerCase();
 
         onChangeValue(textoInputToLowerCase);
+        console.log(textoInputToLowerCase);
     };
 
     return (

@@ -5,6 +5,7 @@ import Bienvenido from './Bienvenido'
 import Exclude from '../assets/Exclude.svg'
 import Persona from '../assets/persona-sin-foto.svg'
 import Logo from '../assets/logo-empresa.svg'
+import '../App.css';
 
 export default function Navegacion() {
     return (
