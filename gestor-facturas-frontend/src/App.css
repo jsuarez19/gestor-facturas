@@ -6,11 +6,15 @@
   --color-green: #6ac90f;
   --color-light-skyblue: #ebf4ff;
   --color-red: #ff0000;
+  --color-morado-claro: #4f6bed;
+  --color-rosado: #fabbc3;
   --color-rojo-opaco: #a4262c;
   --color-rojo-claro: #c7636a;
   --color-plomo-oscuro: #adadad;
   --color-naranja: #ca5010;
+  --colo-naranja-claro: #ef8d23;
   --color-verde-claro: #caf0cc;
+  --color-plomo: #858585;
 }
 
 * {
@@ -84,6 +88,8 @@ body {
 .Contenido-seccion-busqueda label {
   margin-right: 12px;
   font-size: 12px;
+  display: flex;
+  align-items: center;
 }
 .Contenido-seccion-busqueda input {
   height: 35px;
@@ -91,6 +97,7 @@ body {
   padding-left: 12px;
   background-color: var(--color-white);
 }
+
 .Contenido-seccion-busqueda input:focus {
   outline: none;
 }
@@ -106,14 +113,19 @@ body {
 }
 .imagen-flecha {
   width: 32px;
-  margin-left: -33px;
   background-color: var(--color-light-blue);
-  margin-top: 1px;
+  margin-top: 0px;
   position: absolute;
   cursor: pointer;
   z-index: 98;
 }
-.Contenido-seccion-busqueda button {
+.cancelado-flecha {
+  margin-left: 241.5px;
+}
+.estatus-flecha {
+  margin-left: 247.5px;
+}
+.contenido-seccion-boton {
   height: 40px;
   width: 200px;
   font-size: 18px;
@@ -143,12 +155,13 @@ body {
 .lista-estatus li,
 .lista-cancelado li {
   padding-left: 12px;
-  margin-top: 10px;
-  margin-bottom: 12px;
+  padding-top: 10px;
+  padding-bottom: 12px;
   cursor: pointer;
 }
 .lista-estatus li:hover {
-  background-color: #002a8d;
+  color: var(--color-white);
+  background-color: var(--color-dark-blue);
 }
 .lista-cancelado {
   display: none;
@@ -159,7 +172,28 @@ body {
   margin-left: 75px;
   background-color: var(--color-white);
 }
-
+.clear-button {
+  margin-left: 170px;
+  position: absolute;
+  background-color: transparent;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  color: var(--color-plomo);
+}
+ /* esstilos para la seccion de filtros de cancelado  */
+ buscarPorEstatus{
+  margin-left: 241px;
+ }
+ .clear-boton-cancelado {
+  position: absolute;
+  margin-left: 100px;
+  background-color: transparent;
+  border: none;
+  color: var(--color-plomo);
+  font-size: 20px;
+  cursor: pointer;
+ }
 /* estilos para la seccion de filtros por fechas  */
 .total-filtro-fechas {
   display: none;
@@ -218,6 +252,10 @@ th {
   border-radius: 4px;
   background-color: var(--color-lead-blue);
   font-size: 16px;
+  transition: all 350ms;
+}
+.fila-tabla:hover {
+  transform: scale(0.98);
 }
 .contenido-tabla {
   width: 100%;
@@ -263,14 +301,14 @@ tbody {
 
 /* esitlos segun el estatus de la factura */
 .estatus-emitido {
-  background-color: #c7636a;
+  background-color: var(--color-morado-claro);
 }
 .estatus-programado {
-  background-color: yellow;
+  background-color: var(--color-verde-claro);
 }
 .estatus-ingresado {
-  background-color: blue;
+  background-color: var(--colo-naranja-claro);
 }
 .estatus-rechazado {
-  background-color: violet;
+  background-color: var(--color-rosado);
 }
