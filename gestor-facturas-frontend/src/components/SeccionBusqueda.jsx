@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import '../App.css';
 import Refresh from '../assets/refresh.svg'
 import Calendario from '../assets/calendar-outline.svg'
@@ -16,10 +16,14 @@ export default function SeccionBusqueda() {
     // state para buscar el numero de factura
     const [numeroFactura, setNumeroFactura] = useState([]);
     const [buscarFactura, setBuscarFactura] = useState("");
-    const [buscarEstado, setBuscarEstado] = useState("");
+    const [buscarEstatus, setBuscarEstatus] = useState("");
     const [buscarCancelado, setBuscarCancelado] = useState("");
+    const [buscarPorFechas, setBuscarPorFechas] = useState("");
     const [filtroNumeroFactura, setFiltroNumeroFactura] = useState([]);
 
+    console.log(buscarPorFechas, 'console de buscar por fechas')
+
+    // obetenemos los datos de la api mediante useEffect
     const URL = 'https://jolusuvi.pythonanywhere.com/api/documentos/?format=json';
     // funcion para obtener los datos de la API
     const showData = async () => {
@@ -37,31 +41,67 @@ export default function SeccionBusqueda() {
         showData();
     }, []);
 
+    // manejo de cambios en las entradas de busqueda 
     const manejarCambiarEntrada = (text, tipo) => {
         if (tipo === 'numeroFactura') {
             setBuscarFactura(text);
         } else if (tipo === 'estado') {
-            setBuscarEstado(text);
+            setBuscarEstatus(text);
         } else if (tipo === 'buscarCancelado') {
             setBuscarCancelado(text);
+        } else if (tipo === 'fechas') {
+            setBuscarPorFechas(text);
         }
+    }
+
+    // limpiar los inputs de los tres
+    // inputs que son por nuemero de factura, estatus , cancelado
+    // Inicializa la referencia usando useRef
+    const estatusFiltroRef = useRef();
+    const numeroFacturaFiltroRef = useRef();
+    const canceladoFiltroRef = useRef();
+ 
+    const limpiarInputsFEC = () => {
+        setBuscarFactura('');
+        setBuscarCancelado('');
+        setBuscarEstatus('');
+
+        if (estatusFiltroRef.current) {
+            estatusFiltroRef.current.limpiarInput();
+        } else if(numeroFacturaFiltroRef.current) {
+            numeroFacturaFiltroRef.current.limpiarInput();
+        } else if(canceladoFiltroRef.current) {
+            canceladoFiltroRef.current.limpiarInput.limpiarInputCancelado();
+        }
+        
     }
 
 
     return (
         <div className='contenido-total-seccion-busqueda'>
             <div className='Contenido-seccion-busqueda'>
-                <InputNumeroFactura onChangeValue={(text) => manejarCambiarEntrada(text, 'numeroFactura')} />
-                <EstatusFiltro onChangeValue={(text) => manejarCambiarEntrada(text, 'estado')} 
+                <InputNumeroFactura
+                value={buscarFactura}
+                onChangeValue={(text) => manejarCambiarEntrada(text, 'numeroFactura')}
+                ref={numeroFacturaFiltroRef}
                 />
-                <CanceladoFiltro onChangeValue={(text) => manejarCambiarEntrada(text, 'buscarCancelado')} />
-                <img className='imagen-logo' src={Refresh} alt="" />
-                <button>Actualizar Facturas</button>
-                <button>Distribuciones</button>
+                <EstatusFiltro
+                value={buscarEstatus}
+                onChangeValue={(text) => manejarCambiarEntrada(text, 'estado')}
+                ref={estatusFiltroRef}  // Ref para acceder al componente hijo desde el padre
+                />
+                <CanceladoFiltro
+                value={buscarCancelado}
+                onChangeValue={(text) => manejarCambiarEntrada(text, 'buscarCancelado')}
+                ref={canceladoFiltroRef}
+                />
+                <img className='imagen-recarga' onClick={limpiarInputsFEC} src={Refresh} alt="" />
+                <button className='contenido-seccion-boton'>Actualizar Facturas</button>
+                <button className='contenido-seccion-boton'>Distribuciones</button>
                 <img className='imagen-logo' onClick={handeclick} src={Calendario} alt="" />
             </div>
             <div className='total-filtro-fechas' style={mostrarFiltroFechas ? {} : { display: 'flex' }}>
-                <FiltroFechas />
+                <FiltroFechas onChangeValue={(text) => manejarCambiarEntrada(text, 'fechas')} />
             </div>
             <table className='contenido-tabla'>
 
@@ -78,14 +118,23 @@ export default function SeccionBusqueda() {
                     </tr>
                 </thead>
                 <tbody>
+                    {/* // filtrado y mapeo de las facturas  */}
                     {numeroFactura
                         .filter((factura) => {
-                            const contieneNumeroFactura = buscarFactura ? factura.NUMERO_FACTURA.toLowerCase().includes(buscarFactura) : true;
-                            const contieneEstatus = buscarEstado ? factura.ESTATUS.toLowerCase().includes(buscarEstado) : true;
-                            const contieneCancelado = buscarCancelado ? factura.CANCELADO.toLowerCase().includes(buscarCancelado) : true;
-                            return contieneNumeroFactura && contieneEstatus && contieneCancelado
-                        })
+                            // filtro por fechas.
+                            const fechaInicio = buscarPorFechas.Inicio ? new Date(buscarPorFechas.Inicio) : null;
+                            const fechaFinal = buscarPorFechas.Final ? new Date(buscarPorFechas.Final) : null;
+                            const fechaFactura = new Date(factura.FECHA_EMISION);
 
+                            const contieneFechas = (!fechaInicio || fechaFactura >= fechaInicio) && (!fechaFinal || fechaFactura <= fechaFinal);
+
+                            const contieneNumeroFactura = buscarFactura ? factura.NUMERO_FACTURA.toLowerCase().includes(buscarFactura) : true;
+                            const contieneEstatus = buscarEstatus ? factura.ESTATUS.toLowerCase().includes(buscarEstatus) : true;
+                            const contieneCancelado = buscarCancelado ? factura.CANCELADO.toLowerCase().includes(buscarCancelado) : true;
+
+                            return contieneFechas && contieneNumeroFactura && contieneEstatus && contieneCancelado;
+                        })
+                        // Se realiza un mapeo de cada factura para su presentación en la tabla
                         .map((factura) => {
                             // cambiar color y texto de si esta cancelado o no
                             let estadoTexto;
@@ -97,7 +146,7 @@ export default function SeccionBusqueda() {
                                 // cambiar el background segun el valor que nos pase la base de datos
                                 estadoClase = 'activa ultima-columna'
                             } else if (factura.ESTADO === 'ANU') {
-                                estadoTexto = 'ANULADA'; 
+                                estadoTexto = 'ANULADA';
                                 estadoClase = 'anulada ultima-columna'
                             } else if (factura.ESTADO === 'NCA') {
                                 estadoTexto = 'ANULADA CON NC';
@@ -114,7 +163,7 @@ export default function SeccionBusqueda() {
 
                             // cambiar el nombre de la clase segun el estatus de la clase 
                             let estatusClase;
-                            if(factura.ESTATUS === 'Emitido') {
+                            if (factura.ESTATUS === 'Emitido') {
                                 estatusClase = 'estatus-emitido'
                             } else if (factura.ESTATUS === 'Programado') {
                                 estatusClase = 'estatus-programado'
@@ -123,6 +172,7 @@ export default function SeccionBusqueda() {
                             } else if (factura.ESTATUS === 'Rechazado') {
                                 estatusClase = 'estatus-rechazado'
                             }
+
 
                             return (
                                 <tr key={factura.NUMERO_FACTURA} className='fila-tabla'  >

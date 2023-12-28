@@ -1,50 +1,63 @@
-import React, { useState } from 'react';
-import FlechaAbajo from '../assets/chevron-down.svg';
-import '../App.css';
+import React, { useState,useEffect } from 'react';
+import imagenes from './imagenes';
 
-export default function EstatusFiltro({ onChangeValue }) {
+
+export default function EstatusFiltro({ onChangeValue, value }) {
     const [mostrarListaEstatus, setMostrarListaEstatus] = useState(false);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
 
     const handleClick = () => {
         setMostrarListaEstatus(!mostrarListaEstatus);
     };
+
     const ocultarSiempre = () => {
         setMostrarListaEstatus(false);
     }
-    const mostrarSiempre = () => {
-        setMostrarListaEstatus(true);
-    }
 
     const BuscandoEstatus = (event) => {
-        console.log(event.target.value, 'estado')
         const textoInput = event.target.value;
         const textoInputToLowerCase = textoInput.toLowerCase();
 
+        setEstadoSeleccionado(textoInputToLowerCase);
         onChangeValue(textoInputToLowerCase);
     };
 
+    
     const filtrarPorEstatus = (estado) => {
-        console.log(estado, 'estados')
         setEstadoSeleccionado(estado);
         onChangeValue(estado);
         ocultarSiempre();
     }
+    // Actualiza el estado cuando el valor cambia desde las props
+    useEffect(() => {
+        setEstadoSeleccionado(value);
+    }, [value]);
 
+    
+    const limpiarInput = () => {
+        setEstadoSeleccionado('');
+        onChangeValue('');
+    };
     return (
         <div className='contenido-inputs'>
             <label htmlFor="Estatus">
                 Estatus N° 1
-                <input
-                    onChange={BuscandoEstatus}
-                    onFocus={mostrarSiempre}
-                    value={estadoSeleccionado}
-                    className='estados'
-                    type="text"
-                    id='Estatus'
-                    placeholder='Elegir Estado(s)'
-                />
-                <img className='imagen-flecha' onClick={handleClick} src={FlechaAbajo} alt="icono flecha abajo" />
+                    {estadoSeleccionado && (
+                        <button className='clear-button' onClick={limpiarInput}>
+                            <span>&times;</span>
+                        </button>
+                    )}
+                <div className='input-container'>
+                    <input
+                        onChange={BuscandoEstatus}
+                        value={estadoSeleccionado}
+                        className='estados'
+                        type="text"
+                        id='Estatus'
+                        placeholder='Elegir Estado(s)'
+                    />
+                </div>
+                <img className='imagen-flecha estatus-flecha' onClick={handleClick} src={imagenes['img-flecha']} alt="icono flecha abajo" />
             </label>
             <div className='lista-estatus' style={mostrarListaEstatus ? { display: 'block' } : { display: 'none' }}>
                 <ul>
