@@ -5,7 +5,7 @@ export const Formulario = () => {
 	const [inputFecha] = useState('');
   const [inputNombre] = useState('');
 	const [inputCondicion] = useState('')
-	}
+	
 
   return (
 		<>
@@ -52,4 +52,6 @@ export const Formulario = () => {
 			</form>
 		</>
 	);
+};
+
 export default Formulario;
