@@ -76,6 +76,20 @@ export default function SeccionBusqueda() {
         
     }
 
+    // Realizar FETCH
+    const handleActualizarButtonClick = async () => {
+      try {
+        const response = await fetch(URL);
+        if (!response.ok) {
+          throw new Error('Error al realizar la solicitud');
+        }
+        const data = await response.json();
+        setNumeroFactura(data);
+        setFiltroNumeroFactura(data);
+      } catch (error) {
+        console.error('Error al realizar la solicitud:', error);
+      }
+    }
 
     return (
         <div className='contenido-total-seccion-busqueda'>
@@ -96,7 +110,7 @@ export default function SeccionBusqueda() {
                 ref={canceladoFiltroRef}
                 />
                 <img className='imagen-recarga' onClick={limpiarInputsFEC} src={Refresh} alt="" />
-                <button className='contenido-seccion-boton'>Actualizar Facturas</button>
+                <button className='contenido-seccion-boton' onClick={handleActualizarButtonClick}>Actualizar Facturas</button>
                 <button className='contenido-seccion-boton'>Distribuciones</button>
                 <img className='imagen-logo' onClick={handeclick} src={Calendario} alt="" />
             </div>
